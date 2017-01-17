@@ -17,7 +17,7 @@ import bluetooth._bluetooth as bluez
 
 dev_id = 0
 FREQUENCY_SECONDS = 600
-MOSQUITTO_HOST = 'frodo.lan'
+MOSQUITTO_HOST = 'servername goes here'
 MOSQUITTO_PORT = 1883
 
 try:
