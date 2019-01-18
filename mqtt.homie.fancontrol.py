@@ -72,7 +72,7 @@ def switchOnHandler(mqttc, obj, msg):
    	print('topic')
 	logging.info('Topic: ' +  msg.topic+'  Message: '+str(msg.payload))
 	print('Topic: ' +  msg.topic+'  Message: '+str(msg.payload))
-        if msg.payload == "1":
+        if msg.payload == "1" or msg.payload == "true" or msg.payload == "ON" or msg.payload == "on":
 		print 'turning fan on'
 		logging.info("Turning Fan on")
 		fan.ChangeDutyCycle(100)
