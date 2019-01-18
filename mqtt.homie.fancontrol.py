@@ -92,4 +92,4 @@ if __name__ == '__main__':
         args = parser.parse_args()
         main(args.configfile)
     except (KeyboardInterrupt, SystemExit):
-        logger.info("Quitting.")
+        logging.info("Quitting.")
