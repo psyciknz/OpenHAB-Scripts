@@ -110,7 +110,7 @@ try:
             continue
 
         # Wait 30 seconds before continuing
-        print('Wrote a message tp MQQTT')
+        print('Wrote a message to MQTT broker')
         time.sleep(FREQUENCY_SECONDS)
 
 except Exception as e:
