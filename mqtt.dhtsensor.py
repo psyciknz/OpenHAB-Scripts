@@ -114,5 +114,5 @@ try:
         time.sleep(FREQUENCY_SECONDS)
 
 except Exception as e:
-    print('Error connecting to the moqtt server: {0}'.format(e))
+    print('Error connecting to the MQTT server: {0}'.format(e))
 
