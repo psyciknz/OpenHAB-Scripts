@@ -75,7 +75,7 @@ print('Press Ctrl-C to quit.')
 print('Connecting to MQTT on {0}'.format(MOSQUITTO_HOST))
 mqttc = mqtt.Client("python_pub")
 mqttc.will_set(MOSQUITTO_LWT_TOPIC, payload='offline', qos=0, retain=True)
-mqttc.connect(MOSQUITTO_HOST,MOSQUITTO_PORT)
+mqttc.connect(MOSQUITTO_HOST,MOSQUITTO_PORT, keepalive=FREQUENCY_SECONDS+10)
 mqttc.publish(MOSQUITTO_LWT_TOPIC, payload='online', qos=0, retain=True)
 try:
 
