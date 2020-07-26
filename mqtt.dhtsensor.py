@@ -109,7 +109,6 @@ try:
         except Exception,e:
             # Error appending data, most likely because credentials are stale.
             # Null out the worksheet so a login is performed at the top of the loop.
-	    mqttc.disconnect()
             print('Append error, logging in again: ' + str(e))
             continue
 
