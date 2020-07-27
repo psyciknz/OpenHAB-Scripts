@@ -56,8 +56,11 @@ MOSQUITTO_HOST = 'servername'
 MOSQUITTO_PORT = 1883
 MOSQUITTO_TEMP_MSG = str(sys.argv[1]) # Old channel name in here
 MOSQUITTO_HUMI_MSG = str(sys.argv[2]) # Old channel name now passed by argument
+MOSQUITTO_BASE_TOPIC = str(sys.argv[1]).split('/') # Extract the base topic
+MOSQUITTO_LWT_TOPIC = MOSQUITTO_BASE_TOPIC[0] + '/LWT' #Create the last-will-and-testament topic
 print('Mosquitto Temp MSG {0}'.format(MOSQUITTO_TEMP_MSG))
 print('Mosquitto Humidity MSG {0}'.format(MOSQUITTO_HUMI_MSG))
+print('Mosquitto LWT MSG {0}'.format(MOSQUITTO_LWT_TOPIC))
 
 # How long to wait (in seconds) between measurements.
 print "Args length: " + str(len(sys.argv))
@@ -71,6 +74,9 @@ print('Logging sensor measurements to {0} every {1} seconds.'.format('MQTT', FRE
 print('Press Ctrl-C to quit.')
 print('Connecting to MQTT on {0}'.format(MOSQUITTO_HOST))
 mqttc = mqtt.Client("python_pub")
+mqttc.will_set(MOSQUITTO_LWT_TOPIC, payload='offline', qos=0, retain=True)
+mqttc.connect(MOSQUITTO_HOST,MOSQUITTO_PORT, keepalive=FREQUENCY_SECONDS+10)
+mqttc.publish(MOSQUITTO_LWT_TOPIC, payload='online', qos=0, retain=True)
 try:
 
     while True:
@@ -91,7 +97,6 @@ try:
 
         # Publish to the MQTT channel
         try:
-     	    mqttc.connect(MOSQUITTO_HOST,MOSQUITTO_PORT);
             print 'Updating {0}'.format(MOSQUITTO_TEMP_MSG)
             (result1,mid) = mqttc.publish(MOSQUITTO_TEMP_MSG,temp)
             print 'Updating {0}'.format(MOSQUITTO_HUMI_MSG)
@@ -100,12 +105,10 @@ try:
             print 'MQTT Updated result {0} and {1}'.format(result1,result2)
             if result1 == 1 or result2 == 1:
                 raise ValueError('Result for one message was not 0')
-	    mqttc.disconnect()
 
         except Exception,e:
             # Error appending data, most likely because credentials are stale.
             # Null out the worksheet so a login is performed at the top of the loop.
-	    mqttc.disconnect()
             print('Append error, logging in again: ' + str(e))
             continue
 
