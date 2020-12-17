@@ -151,10 +151,9 @@ def parse_events(sock, loop_count=100):
 				num_reports = struct.unpack("B", pkt[0])[0]
 				report_pkt_offset = 0
 				for i in range(0, num_reports):
-		  			company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
-		  			print("===============================================================================================================")
+					company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
+					print("===============================================================================================================")
 					print("\tfullpacket: ", printpacket(pkt))
-					
 					if (company == "3301"):
 						print("\tCompany: ",company)
 						udid = returnstringpacket(pkt[report_pkt_offset + 22: report_pkt_offset - 6])
