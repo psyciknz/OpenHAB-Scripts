@@ -56,7 +56,7 @@ def main(configfile='homie-bluetooth.json'):
 	except:
 		print( "error accessing bluetooth device...")
 		logging.info("error accessing bluetooth device...")
-	    	sys.exit(1)
+			sys.exit(1)
 	
 	bluemaestroscan.hci_le_set_scan_parameters(sock)
 	bluemaestroscan.hci_enable_le_scan(sock)
@@ -65,7 +65,7 @@ def main(configfile='homie-bluetooth.json'):
 	while True:
 		try:
 			returnedList = bluemaestroscan.parse_events(sock, 2)
-	                nodes = {}
+					nodes = {}
 			print("-------------------------------------------------------------------------------------------------------")
 			logging.info("-------------------------------------------------------------------------------------------------------")
 			mac = ""
@@ -102,15 +102,15 @@ def main(configfile='homie-bluetooth.json'):
 						#	Homie.setNodeProperty(temperatureNode,"temperature",float(returnedList["temp"]),True)
 						#	nodes[mac+"temperature"] = temperatureNode
 						#	print("Added new temperature node for mac" + mac)
-			        		print('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
-			        		logging.info('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
+							print('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
+							logging.info('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
 
 						print("CHecking nodes for " + mac+"humidity")
 						updatenode(Homie, nodes,mac,"humidity",float(returnedList["humidity"]))
 						#humidityNode = Homie.Node(mac,"humidity")
 						#Homie.setNodeProperty(humidityNode,"humidity",float(returnedList["humidity"]),True)
-	        				print ( 'Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
-	        				logging.info('Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
+							print ( 'Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
+							logging.info('Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
 						
 						print("CHecking nodes for " + mac+"battery")
 						updatenode(Homie, nodes,mac,"battery",float(returnedList["battery"]))
@@ -146,12 +146,12 @@ def main(configfile='homie-bluetooth.json'):
 					print ("Sleeping for 30 seconds" )
 					logging.info("Sleeping for 30 seconds" )
 					time.sleep(30)
-                        logging.info("Sleeping for %s seconds" % FREQUENCY_SECONDS)
-                        print("Sleeping for %s seconds" % FREQUENCY_SECONDS)
+						logging.info("Sleeping for %s seconds" % FREQUENCY_SECONDS)
+						print("Sleeping for %s seconds" % FREQUENCY_SECONDS)
 			time.sleep(FREQUENCY_SECONDS)
 
 		except Exception as e:
-	       	# Error appending data, most likely because credentials are stale.
+		   	# Error appending data, most likely because credentials are stale.
 			# Null out the worksheet so a login is performed at the top of the loop.
 			print('Append error, logging in again: ' + str(e))
 			print ("Sleeping for 60 seconds")
@@ -159,11 +159,11 @@ def main(configfile='homie-bluetooth.json'):
 			continue
 
 if __name__ == '__main__':
-    try:
-        parser= argparse.ArgumentParser(description="Homie Based Bluetooth Reader")
-        parser.add_argument('-c','--configfile', help='Configuration filename (json)',required=True)
-        args = parser.parse_args()
-        main(args.configfile)
-    except (KeyboardInterrupt, SystemExit):
-        print ("quitting.")
+	try:
+		parser= argparse.ArgumentParser(description="Homie Based Bluetooth Reader")
+		parser.add_argument('-c','--configfile', help='Configuration filename (json)',required=True)
+		args = parser.parse_args()
+		main(args.configfile)
+	except (KeyboardInterrupt, SystemExit):
+		print ("quitting.")
 
