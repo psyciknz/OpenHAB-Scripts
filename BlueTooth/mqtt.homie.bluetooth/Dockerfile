@@ -7,5 +7,5 @@ RUN mkdir /config
 RUN pip install --no-cache-dir pybluez homie
 
 COPY . .
-
+RUN ls -la
 CMD [ "python", "mqtt.homie.bluetooth.py -c /config/config.json" ]
