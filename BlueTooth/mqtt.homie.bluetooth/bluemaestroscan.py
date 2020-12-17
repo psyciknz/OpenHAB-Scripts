@@ -153,8 +153,7 @@ def parse_events(sock, loop_count=100):
 				for i in range(0, num_reports):
 		  			company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
 		  			print("===============================================================================================================")
-					if (DEBUG == True):
-						print("\tfullpacket: ", printpacket(pkt))
+					print("\tfullpacket: ", printpacket(pkt))
 
 					if (company == "3301"):
 						print("\tCompany: ",company)
