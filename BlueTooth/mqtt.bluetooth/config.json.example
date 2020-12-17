@@ -1,0 +1,21 @@
+{
+	"MQTT": {
+		"HOST": "something.cloudmqtt.com",
+		"PORT": 12343,
+		"KEEPALIVE": 10,
+		"USERNAME": "username",
+		"PASSWORD": "password"
+	},
+	"topics": {
+		"temp": "/bluemaestro/temp",
+		"humidity": "/bluemaestro/humidity",
+		"dewpoint": "/bluemaestro/dewpoint",
+		"battery": "/bluemaestro/battery"
+		"timestamp": "bluemaestro/timestamp"
+	},
+	"bluetooth": {
+		"frequency": 1,
+		"log": "ble-log.txt"
+    #"log": "stream://stdout"
+	}
+}
