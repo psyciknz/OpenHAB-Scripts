@@ -52,39 +52,39 @@ ADV_SCAN_RSP=0x04
 
 
 def returnnumberpacket(pkt):
-    myInteger = 0
-    multiple = 256
-    for c in pkt:
-        myInteger +=  struct.unpack("B",c)[0] * multiple
-        multiple = 1
-    return myInteger 
+	myInteger = 0
+	multiple = 256
+	for c in pkt:
+		myInteger +=  struct.unpack("B",c)[0] * multiple
+		multiple = 1
+	return myInteger 
 
 def returnstringpacket(pkt):
-    myString = "";
-    for c in pkt:
-        myString +=  "%02x" %struct.unpack("B",c)[0]
-    return myString 
+	myString = "";
+	for c in pkt:
+		myString +=  "%02x" %struct.unpack("B",c)[0]
+	return myString 
 
 def printpacket(pkt):
-    for c in pkt:
-        sys.stdout.write("%02x " % struct.unpack("B",c)[0])
+	for c in pkt:
+		sys.stdout.write("%02x " % struct.unpack("B",c)[0])
 
 def get_packed_bdaddr(bdaddr_string):
-    packable_addr = []
-    addr = bdaddr_string.split(':')
-    addr.reverse()
-    for b in addr: 
-        packable_addr.append(int(b, 16))
-    return struct.pack("<BBBBBB", *packable_addr)
+	packable_addr = []
+	addr = bdaddr_string.split(':')
+	addr.reverse()
+	for b in addr: 
+		packable_addr.append(int(b, 16))
+	return struct.pack("<BBBBBB", *packable_addr)
 
 def packed_bdaddr_to_string(bdaddr_packed):
-    return ':'.join('%02x'%i for i in struct.unpack("<BBBBBB", bdaddr_packed[::-1]))
+	return ':'.join('%02x'%i for i in struct.unpack("<BBBBBB", bdaddr_packed[::-1]))
 
 def hci_enable_le_scan(sock):
-    hci_toggle_le_scan(sock, 0x01)
+	hci_toggle_le_scan(sock, 0x01)
 
 def hci_disable_le_scan(sock):
-    hci_toggle_le_scan(sock, 0x00)
+	hci_toggle_le_scan(sock, 0x00)
 
 def hci_toggle_le_scan(sock, enable):
 # hci_le_set_scan_enable(dd, 0x01, filter_dup, 1000);
@@ -104,107 +104,107 @@ def hci_toggle_le_scan(sock, enable):
 
 #        if (hci_send_req(dd, &rq, to) < 0)
 #                return -1;
-    cmd_pkt = struct.pack("<BB", enable, 0x00)
-    bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
+	cmd_pkt = struct.pack("<BB", enable, 0x00)
+	bluez.hci_send_cmd(sock, OGF_LE_CTL, OCF_LE_SET_SCAN_ENABLE, cmd_pkt)
 
 
 def hci_le_set_scan_parameters(sock):
-    old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
+	old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
 
-    SCAN_RANDOM = 0x01
-    OWN_TYPE = SCAN_RANDOM
-    SCAN_TYPE = 0x01
+	SCAN_RANDOM = 0x01
+	OWN_TYPE = SCAN_RANDOM
+	SCAN_TYPE = 0x01
 
 
-    
+	
 def parse_events(sock, loop_count=100):
-    old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
+	old_filter = sock.getsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, 14)
 
-    # perform a device inquiry on bluetooth device #0
-    # The inquiry should last 8 * 1.28 = 10.24 seconds
-    # before the inquiry is performed, bluez should flush its cache of
-    # previously discovered devices
-    flt = bluez.hci_filter_new()
-    bluez.hci_filter_all_events(flt)
-    bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
-    sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
-    done = False
-    results = []
-    myFullList = {}
-    for i in range(0, loop_count):
-        pkt = sock.recv(255)
-        ptype, event, plen = struct.unpack("BBB", pkt[:3])
-        #print "--------------" 
-        if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
-		i =0
-        elif event == bluez.EVT_NUM_COMP_PKTS:
-                i =0 
-        elif event == bluez.EVT_DISCONN_COMPLETE:
-                i =0 
-        elif event == LE_META_EVENT:
-            subevent, = struct.unpack("B", pkt[3])
-            pkt = pkt[4:]
-            if subevent == EVT_LE_CONN_COMPLETE:
-                le_handle_connection_complete(pkt)
-            elif subevent == EVT_LE_ADVERTISING_REPORT:
-                #print "advertising report"
-                num_reports = struct.unpack("B", pkt[0])[0]
-                report_pkt_offset = 0
-                for i in range(0, num_reports):
-		  company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
-		  print("===============================================================================================================")
-		  if (DEBUG == True):
-			  print("\tfullpacket: ", printpacket(pkt))
+	# perform a device inquiry on bluetooth device #0
+	# The inquiry should last 8 * 1.28 = 10.24 seconds
+	# before the inquiry is performed, bluez should flush its cache of
+	# previously discovered devices
+	flt = bluez.hci_filter_new()
+	bluez.hci_filter_all_events(flt)
+	bluez.hci_filter_set_ptype(flt, bluez.HCI_EVENT_PKT)
+	sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, flt )
+	done = False
+	results = []
+	myFullList = {}
+	for i in range(0, loop_count):
+		pkt = sock.recv(255)
+		ptype, event, plen = struct.unpack("BBB", pkt[:3])
+		#print "--------------" 
+		if event == bluez.EVT_INQUIRY_RESULT_WITH_RSSI:
+			i =0
+		elif event == bluez.EVT_NUM_COMP_PKTS:
+			i=0 
+		elif event == bluez.EVT_DISCONN_COMPLETE:
+			i =0 
+		elif event == LE_META_EVENT:
+			subevent, = struct.unpack("B", pkt[3])
+			pkt = pkt[4:]
+			if subevent == EVT_LE_CONN_COMPLETE:
+				le_handle_connection_complete(pkt)
+			elif subevent == EVT_LE_ADVERTISING_REPORT:
+				#print "advertising report"
+				num_reports = struct.unpack("B", pkt[0])[0]
+				report_pkt_offset = 0
+				for i in range(0, num_reports):
+		  			company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
+		  			print("===============================================================================================================")
+					if (DEBUG == True):
+						print("\tfullpacket: ", printpacket(pkt))
 
-		  if (company == "3301"):
-			  print("\tCompany: ",company)
-			  udid = returnstringpacket(pkt[report_pkt_offset + 22: report_pkt_offset - 6])
-			  print("\tUDID: ", udid)
-			  myFullList["udid"] = udid
+					if (company == "3301"):
+						print("\tCompany: ",company)
+						udid = returnstringpacket(pkt[report_pkt_offset + 22: report_pkt_offset - 6])
+						print("\tUDID: ", udid)
+						myFullList["udid"] = udid
 
-			  print("\tMAJOR: ", printpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4]))
-			  print( "\tMINOR: ", printpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2]))
-			  print( "\tMAC address: ", packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
-			  mac = returnstringpacket(pkt[report_pkt_offset + 3: report_pkt_offset + 9])
-			  myFullList["mac"] = mac
-			  print ("\tMAC Address string: ", returnstringpacket(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
-			  tempString = returnstringpacket(pkt[report_pkt_offset + 23: report_pkt_offset + 25])
-			  print ("\tTemp: " , tempString )
-			  temp = float(returnnumberpacket(pkt[report_pkt_offset + 23:report_pkt_offset + 25]))/10
-			  print ("\tTemp: " , temp)
-			  myFullList["temp"] = temp
+						print("\tMAJOR: ", printpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4]))
+						print( "\tMINOR: ", printpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2]))
+						print( "\tMAC address: ", packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
+						mac = returnstringpacket(pkt[report_pkt_offset + 3: report_pkt_offset + 9])
+						myFullList["mac"] = mac
+						print ("\tMAC Address string: ", returnstringpacket(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
+						tempString = returnstringpacket(pkt[report_pkt_offset + 23: report_pkt_offset + 25])
+						print ("\tTemp: " , tempString )
+						temp = float(returnnumberpacket(pkt[report_pkt_offset + 23:report_pkt_offset + 25]))/10
+						print ("\tTemp: " , temp)
+						myFullList["temp"] = temp
 
-			  print ("\tHumidity: " ,printpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))
-			  humidity = float(returnnumberpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))/10
-			  print ("\tHumidity: " ,humidity )
-			  myFullList["humidity"] = humidity 
+						print ("\tHumidity: " ,printpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))
+						humidity = float(returnnumberpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))/10
+						print ("\tHumidity: " ,humidity )
+						myFullList["humidity"] = humidity 
 
 
-			  dewpoint = float(returnnumberpacket(pkt[report_pkt_offset + 27:report_pkt_offset + 29]))/10
-			  print ("\tDewpoint: " ,dewpoint )
-			  myFullList["dewpoint"] = dewpoint
+						dewpoint = float(returnnumberpacket(pkt[report_pkt_offset + 27:report_pkt_offset + 29]))/10
+						print ("\tDewpoint: " ,dewpoint )
+						myFullList["dewpoint"] = dewpoint
 
-			  nameLength = int(returnstringpacket(pkt[report_pkt_offset + 32]))
-			  print ("\tNameLength: ",nameLength)
+						nameLength = int(returnstringpacket(pkt[report_pkt_offset + 32]))
+						print ("\tNameLength: ",nameLength)
 
-			  name = returnstringpacket(pkt[report_pkt_offset + 33:report_pkt_offset + (33+nameLength-1)])
-			  print ("\tName: %s %d " % (name.decode("hex"),nameLength))
-			  myFullList["name"] = name.decode("hex")
+						name = returnstringpacket(pkt[report_pkt_offset + 33:report_pkt_offset + (33+nameLength-1)])
+						print ("\tName: %s %d " % (name.decode("hex"),nameLength))
+						myFullList["name"] = name.decode("hex")
 
-			  print ("\tBattery: " ,printpacket(pkt[report_pkt_offset + 18:report_pkt_offset + 19]))
-			  battery = float(float(returnnumberpacket(pkt[report_pkt_offset + 18]) / float(25500) ) * 100)
-			  print ("\tBattery: " ,battery)
-			  myFullList["battery"] = battery
-			  done = True
-		  else:
-			  print ("\tNon blue maestro packet found")
-    sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
-    return myFullList
+						print ("\tBattery: " ,printpacket(pkt[report_pkt_offset + 18:report_pkt_offset + 19]))
+						battery = float(float(returnnumberpacket(pkt[report_pkt_offset + 18]) / float(25500) ) * 100)
+						print ("\tBattery: " ,battery)
+						myFullList["battery"] = battery
+						done = True
+					else:
+						print ("\tNon blue maestro packet found")
+	sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
+	return myFullList
 
 def le_handle_connection_complete(pkt):
-    status, handle, role, peer_bdaddr_type = struct.unpack("<BHBB", pkt[0:5])
-    device_address = packed_bdaddr_to_string(pkt[5:11])
-    interval, latency, supervision_timeout, master_clock_accuracy = struct.unpack("<HHHB", pkt[11:])
-    print ("status: 0x%02x\nhandle: 0x%04x" % (status, handle))
-    print ("role: 0x%02x" % role)
-    print ("device address: ", device_address)
+	status, handle, role, peer_bdaddr_type = struct.unpack("<BHBB", pkt[0:5])
+	device_address = packed_bdaddr_to_string(pkt[5:11])
+	interval, latency, supervision_timeout, master_clock_accuracy = struct.unpack("<HHHB", pkt[11:])
+	print ("status: 0x%02x\nhandle: 0x%04x" % (status, handle))
+	print ("role: 0x%02x" % role)
+	print ("device address: ", device_address)
