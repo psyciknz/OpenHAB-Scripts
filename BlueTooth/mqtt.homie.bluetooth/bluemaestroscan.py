@@ -154,7 +154,7 @@ def parse_events(sock, loop_count=100):
 		  			company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
 		  			print("===============================================================================================================")
 					print("\tfullpacket: ", printpacket(pkt))
-
+					
 					if (company == "3301"):
 						print("\tCompany: ",company)
 						udid = returnstringpacket(pkt[report_pkt_offset + 22: report_pkt_offset - 6])
