@@ -72,9 +72,22 @@ def main( configfile='homie-bluetooth.json' ):
 
 	MOSQUITTO_HOST = config["MQTT"]["HOST"]
 	MOSQUITTO_PORT = config["MQTT"]["PORT"]
-	MOSQUITTO_KEEPALIVE = config["MQTT"]["KEEPALIVE"]
-	MOSQUITTO_USER = config["MQTT"]["USERNAME"]
-	MOSQUITTO_PWD = config["MQTT"]["PASSWORD"]
+	try:
+		MOSQUITTO_KEEPALIVE = config["MQTT"]["KEEPALIVE"]
+	except:
+		pass
+	try:
+		MOSQUITTO_USER = config["MQTT"]["USERNAME"]
+	except:
+		pass
+	try:
+		MOSQUITTO_PWD = config["MQTT"]["PASSWORD"]
+	except:
+		pass
+	try:
+		MOSQUITTO_TLS = config["MQTT"]["TLS_CERT"]
+	except:
+		pass
 
 	# Set freq and log filename
 	FREQUENCY_SECONDS =config["bluetooth"]["frequency"]
@@ -85,8 +98,8 @@ def main( configfile='homie-bluetooth.json' ):
 	print ("Connecting to {0}:{1}".format( MOSQUITTO_HOST, MOSQUITTO_PORT ))
 	if MOSQUITTO_USER is not None:
 		mqttc.username_pw_set( MOSQUITTO_USER, MOSQUITTO_PWD )
-	if "TLS_CERT" in config["MQTT"]:
-		mqttc.tls_set( ca_certs=config["MQTT"]["TLS_CERT"] )
+	if MOSQUITTO_TLS is not None:
+		mqttc.tls_set( ca_certs=MOSQUITTO_TLS)
 	mqttc.connect( MOSQUITTO_HOST, MOSQUITTO_PORT, MOSQUITTO_KEEPALIVE )
 	mqttc.loop_start()
 
