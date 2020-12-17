@@ -142,14 +142,16 @@ def main(configfile='homie-bluetooth.json'):
 						logging.error("Sleeping for 60 seconds")
 						time.sleep(60)
 						continue
+				# if len(returnedList) > 0:
 				else:
 					print ("Sleeping for 30 seconds" )
 					logging.info("Sleeping for 30 seconds" )
 					time.sleep(30)
 					logging.info("Sleeping for %s seconds" % FREQUENCY_SECONDS)
 					print("Sleeping for %s seconds" % FREQUENCY_SECONDS)
+			#for beacon in returnedList:
 			time.sleep(FREQUENCY_SECONDS)
-
+		#try
 		except Exception as e:
 		   	# Error appending data, most likely because credentials are stale.
 			# Null out the worksheet so a login is performed at the top of the loop.
@@ -157,7 +159,7 @@ def main(configfile='homie-bluetooth.json'):
 			print ("Sleeping for 60 seconds")
 			time.sleep(60)
 			continue
-
+	#while True:
 if __name__ == '__main__':
 	try:
 		parser= argparse.ArgumentParser(description="Homie Based Bluetooth Reader")

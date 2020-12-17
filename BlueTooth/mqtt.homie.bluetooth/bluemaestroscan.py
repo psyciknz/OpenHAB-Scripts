@@ -152,52 +152,59 @@ def parse_events(sock, loop_count=100):
                 report_pkt_offset = 0
                 for i in range(0, num_reports):
 		  company = returnstringpacket(pkt[report_pkt_offset + 15: report_pkt_offset + 17])
-		  print "==============================================================================================================="
+		  print("===============================================================================================================")
 		  if (DEBUG == True):
-			  print "\tfullpacket: ", printpacket(pkt)
+			  print("\tfullpacket: ", printpacket(pkt))
 
 		  if (company == "3301"):
-			  print "\tCompany: ",company
+			  print("\tCompany: ",company)
 			  udid = returnstringpacket(pkt[report_pkt_offset + 22: report_pkt_offset - 6])
-			  print "\tUDID: ", udid
+			  print("\tUDID: ", udid)
 			  myFullList["udid"] = udid
 
-			  print "\tMAJOR: ", printpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4])
-			  print "\tMINOR: ", printpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2])
-			  print "\tMAC address: ", packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
+			  print("\tMAJOR: ", printpacket(pkt[report_pkt_offset -6: report_pkt_offset - 4]))
+			  print( "\tMINOR: ", printpacket(pkt[report_pkt_offset -4: report_pkt_offset - 2]))
+			  print( "\tMAC address: ", packed_bdaddr_to_string(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
 			  mac = returnstringpacket(pkt[report_pkt_offset + 3: report_pkt_offset + 9])
 			  myFullList["mac"] = mac
-			  print "\tMAC Address string: ", returnstringpacket(pkt[report_pkt_offset + 3:report_pkt_offset + 9])
+			  print ("\tMAC Address string: ", returnstringpacket(pkt[report_pkt_offset + 3:report_pkt_offset + 9]))
 			  tempString = returnstringpacket(pkt[report_pkt_offset + 23: report_pkt_offset + 25])
-			  print "\tTemp: " , tempString 
+			  print ("\tTemp: " , tempString )
 			  temp = float(returnnumberpacket(pkt[report_pkt_offset + 23:report_pkt_offset + 25]))/10
-			  print "\tTemp: " , temp
+			  print ("\tTemp: " , temp)
 			  myFullList["temp"] = temp
 
-			  print "\tHumidity: " ,printpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27])
+			  print ("\tHumidity: " ,printpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))
 			  humidity = float(returnnumberpacket(pkt[report_pkt_offset + 25:report_pkt_offset + 27]))/10
-			  print "\tHumidity: " ,humidity 
+			  print ("\tHumidity: " ,humidity )
 			  myFullList["humidity"] = humidity 
 
 
 			  dewpoint = float(returnnumberpacket(pkt[report_pkt_offset + 27:report_pkt_offset + 29]))/10
-			  print "\tDewpoint: " ,dewpoint 
+			  print ("\tDewpoint: " ,dewpoint )
 			  myFullList["dewpoint"] = dewpoint
 
 			  nameLength = int(returnstringpacket(pkt[report_pkt_offset + 32]))
-			  print "\tNameLength: ",nameLength
+			  print ("\tNameLength: ",nameLength)
 
 			  name = returnstringpacket(pkt[report_pkt_offset + 33:report_pkt_offset + (33+nameLength-1)])
-			  print "\tName: %s %d " % (name.decode("hex"),nameLength)
+			  print ("\tName: %s %d " % (name.decode("hex"),nameLength))
 			  myFullList["name"] = name.decode("hex")
 
-			  print "\tBattery: " ,printpacket(pkt[report_pkt_offset + 18:report_pkt_offset + 19])
+			  print ("\tBattery: " ,printpacket(pkt[report_pkt_offset + 18:report_pkt_offset + 19]))
 			  battery = float(float(returnnumberpacket(pkt[report_pkt_offset + 18]) / float(25500) ) * 100)
-			  print "\tBattery: " ,battery
+			  print ("\tBattery: " ,battery)
 			  myFullList["battery"] = battery
 			  done = True
 		  else:
-			  print "\tNon blue maestro packet found"
+			  print ("\tNon blue maestro packet found")
     sock.setsockopt( bluez.SOL_HCI, bluez.HCI_FILTER, old_filter )
     return myFullList
 
+def le_handle_connection_complete(pkt):
+    status, handle, role, peer_bdaddr_type = struct.unpack("<BHBB", pkt[0:5])
+    device_address = packed_bdaddr_to_string(pkt[5:11])
+    interval, latency, supervision_timeout, master_clock_accuracy = struct.unpack("<HHHB", pkt[11:])
+    print ("status: 0x%02x\nhandle: 0x%04x" % (status, handle))
+    print ("role: 0x%02x" % role)
+    print ("device address: ", device_address)
