@@ -9,7 +9,7 @@
 
 # Credit jcs 6/8/2014 as basis
 
-import bluemaestroscan  #specific bluemaestro tempo disc scanner
+from .. import bluemaestroscan  #specific bluemaestro tempo disc scanner
 import json
 import sys
 import argparse
@@ -40,13 +40,13 @@ def updatenode(Homie, nodelist,mac,nodevalue,newvalue):
 
 def main(configfile='homie-bluetooth.json'):
 	Homie = homie.Homie(configfile)
-	Homie.setFirmware("bluemaestro-temperature","1.0.0")
+	Homie.setFirmware("bluemaestro-temperature","1.0.1")
 	Homie.setup()
-        json_data=open(configfile).read()
-        data = json.loads(json_data)
-        FREQUENCY_SECONDS =data["bluetooth"]["frequency"]
-        LOG = data["bluetooth"]["log"]
-        logging.basicConfig(filename=LOG, level=logging.INFO,format='%(asctime)s %(levelname)s %(message)s')   
+	json_data=open(configfile).read()
+	data = json.loads(json_data)
+   	FREQUENCY_SECONDS =data["bluetooth"]["frequency"]
+	LOG = data["bluetooth"]["log"]
+	logging.basicConfig(filename=LOG, level=logging.INFO,format='%(asctime)s %(levelname)s %(message)s')   
 
 
 	try:
@@ -54,7 +54,7 @@ def main(configfile='homie-bluetooth.json'):
 		logging.info("ble thread started")
 
 	except:
-		print "error accessing bluetooth device..."
+		print( "error accessing bluetooth device...")
 		logging.info("error accessing bluetooth device...")
 	    	sys.exit(1)
 	
@@ -66,7 +66,7 @@ def main(configfile='homie-bluetooth.json'):
 		try:
 			returnedList = bluemaestroscan.parse_events(sock, 2)
 	                nodes = {}
-			print "-------------------------------------------------------------------------------------------------------"
+			print("-------------------------------------------------------------------------------------------------------")
 			logging.info("-------------------------------------------------------------------------------------------------------")
 			mac = ""
 			temp = 0
@@ -75,14 +75,14 @@ def main(configfile='homie-bluetooth.json'):
 			logging.info('Date Time:   {0}'.format(currentdate))
 			for beacon in returnedList:
 				val = returnedList[beacon]
-				print beacon, val
+				print( beacon, val)
 				mac = returnedList["mac"]
 				temp = returnedList["temp"]
 		
-				print "number of beacons found {0}".format(len(returnedList))
+				print("number of beacons found {0}".format(len(returnedList)))
 				logging.info("number of beacons found {0}".format(len(returnedList)))
 				if len(returnedList) > 0:
-					print "%s/temperature = %.2f" % (returnedList["mac"],returnedList["temp"])
+					print("%s/temperature = %.2f" % (returnedList["mac"],returnedList["temp"]))
 					logging.info("%s/temperature = %.2f" % (returnedList["mac"],returnedList["temp"]))
 					# Publish to the MQTT channel
 					try:
@@ -102,14 +102,14 @@ def main(configfile='homie-bluetooth.json'):
 						#	Homie.setNodeProperty(temperatureNode,"temperature",float(returnedList["temp"]),True)
 						#	nodes[mac+"temperature"] = temperatureNode
 						#	print("Added new temperature node for mac" + mac)
-			        		print 'Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"]))
+			        		print('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
 			        		logging.info('Updating temp for {0} to {1}'.format(returnedList["mac"],float(returnedList["temp"])))
 
 						print("CHecking nodes for " + mac+"humidity")
 						updatenode(Homie, nodes,mac,"humidity",float(returnedList["humidity"]))
 						#humidityNode = Homie.Node(mac,"humidity")
 						#Homie.setNodeProperty(humidityNode,"humidity",float(returnedList["humidity"]),True)
-	        				print  'Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"]))
+	        				print ( 'Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
 	        				logging.info('Updating humidity {0} = {1}'.format(returnedList["mac"],float(returnedList["humidity"])))
 						
 						print("CHecking nodes for " + mac+"battery")
@@ -117,14 +117,14 @@ def main(configfile='homie-bluetooth.json'):
 
 						#batteryNode = Homie.Node(mac,"battery")
 						#Homie.setNodeProperty(batteryNode,"battery",float(returnedList["battery"]),True)
-						print 'Updating battery {0}/battery = {1}'.format(returnedList["mac"],float(returnedList["battery"]))
+						print ('Updating battery {0}/battery = {1}'.format(returnedList["mac"],float(returnedList["battery"])))
 						logging.info('Updating battery {0}/battery = {1}'.format(returnedList["mac"],float(returnedList["battery"])))
 						
 						print("CHecking nodes for " + mac+"dewpoint")
 						updatenode(Homie, nodes,mac,"dewpoint",float(returnedList["dewpoint"]))
 						#dewpointNode = Homie.Node(mac,"dewpoint")
 						#Homie.setNodeProperty(dewpointNode,"dewpoint",float(returnedList["dewpoint"]),True)
-						print  'Updating {0}/dewpoint = {1}'.format( returnedList["mac"],returnedList["dewpoint"])
+						print( 'Updating {0}/dewpoint = {1}'.format( returnedList["mac"],returnedList["dewpoint"]))
 						logging.info('Updating {0}/dewpoint = {1}'.format( returnedList["mac"],returnedList["dewpoint"]))
 						
 						print("CHecking nodes for " + mac+"name")
@@ -132,29 +132,29 @@ def main(configfile='homie-bluetooth.json'):
 
 						#nameNode = Homie.Node(mac,"name")
 						#Homie.setNodeProperty(nameNode,"name",returnedList["name"],True)
-						print  'Updating name {0}/name = {1}'.format(returnedList["mac"],returnedList["name"])
+						print ( 'Updating name {0}/name = {1}'.format(returnedList["mac"],returnedList["name"]))
 						logging.info('Updating name {0}/name = {1}'.format(returnedList["mac"],returnedList["name"]))
 						time.sleep(1)
 
-					except Exception,e:
+					except Exception as e:
 						# Null out the worksheet so a login is performed at the top of the loop.
 						logging.error('Append error, logging in again: ' + str(e))
 						logging.error("Sleeping for 60 seconds")
 						time.sleep(60)
 						continue
 				else:
-					print "Sleeping for 30 seconds" 
+					print ("Sleeping for 30 seconds" )
 					logging.info("Sleeping for 30 seconds" )
 					time.sleep(30)
                         logging.info("Sleeping for %s seconds" % FREQUENCY_SECONDS)
                         print("Sleeping for %s seconds" % FREQUENCY_SECONDS)
 			time.sleep(FREQUENCY_SECONDS)
 
-		except Exception,e:
+		except Exception as e:
 	       	# Error appending data, most likely because credentials are stale.
 			# Null out the worksheet so a login is performed at the top of the loop.
 			print('Append error, logging in again: ' + str(e))
-			print "Sleeping for 60 seconds"
+			print ("Sleeping for 60 seconds")
 			time.sleep(60)
 			continue
 
@@ -165,5 +165,5 @@ if __name__ == '__main__':
         args = parser.parse_args()
         main(args.configfile)
     except (KeyboardInterrupt, SystemExit):
-        print "quitting."
+        print ("quitting.")
 
