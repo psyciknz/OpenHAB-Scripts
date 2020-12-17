@@ -1,0 +1,14 @@
+{
+  "name":"Bluemaestro",
+  "device_id":"blue-maestro",
+   "mqtt":
+   {
+     "host":"localhost",
+     "port":1883,
+     "base_topic":"bluemaestro"
+   },
+   "bluetooth":
+    {
+        "frequency": 500,
+    }   "log": "stdout"
+}

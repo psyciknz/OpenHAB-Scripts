@@ -8,4 +8,4 @@ RUN pip install --no-cache-dir pybluez homie
 
 COPY . .
 
-CMD [ "python", "./mqtt.homie.bluetooth.py -c /config/config.json" ]
+CMD [ "python", "mqtt.homie.bluetooth.py -c /config/config.json" ]
