@@ -72,6 +72,11 @@ def main( configfile='homie-bluetooth.json' ):
 
 	MOSQUITTO_HOST = config["MQTT"]["HOST"]
 	MOSQUITTO_PORT = config["MQTT"]["PORT"]
+	MOSQUITTO_KEEPALIVE = None
+	MOSQUITTO_USER = None
+	MOSQUITTO_PWD = None
+	MOSQUITTO_TLS = None
+
 	try:
 		MOSQUITTO_KEEPALIVE = config["MQTT"]["KEEPALIVE"]
 	except:
