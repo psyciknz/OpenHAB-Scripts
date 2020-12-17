@@ -39,19 +39,19 @@ LOG = "/var/log/mqtt.home.bluetooth.log"
 
 # Define event callbacks
 def on_connect(client, userdata, flags, rc):
-    print("rc: " + str(rc))
+	print("rc: " + str(rc))
 
 def on_message(client, obj, msg):
-    print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
+	print(msg.topic + " " + str(msg.qos) + " " + str(msg.payload))
 
 def on_publish(client, obj, mid):
-    print("mid: " + str(mid))
+	print("mid: " + str(mid))
 
 def on_subscribe(client, obj, mid, granted_qos):
-    print("Subscribed: " + str(mid) + " " + str(granted_qos))
+	print("Subscribed: " + str(mid) + " " + str(granted_qos))
 
 def on_log(client, obj, level, string):
-    print(string)
+	print(string)
 
 # Initialize MQTT client and assign callbacks (global scope so we can disconnect from outer exception handler)
 mqttc = mqtt.Client()	# Default parameters. Auto-generate client name
@@ -96,7 +96,7 @@ def main( configfile='homie-bluetooth.json' ):
 	except:
 		print ("error accessing bluetooth device...")
 		logging.error("error accessing bluetooth device...")
-	    	sys.exit(1)
+		sys.exit(1)
 	
 	bluemaestroscan.hci_le_set_scan_parameters(sock)
 	bluemaestroscan.hci_enable_le_scan(sock)
@@ -123,7 +123,7 @@ def main( configfile='homie-bluetooth.json' ):
 					mqttc.publish( config["topics"]["battery"], battery )
 					mqttc.publish( config["topics"]["timestamp"], currentdatetime )
 
-				except Exception,e:
+				except Exception as e:
 					# Null out the worksheet so a login is performed at the top of the loop.
 					logging.error('Append error, logging in again: ' + str(e))
 					logging.error("Sleeping for 60 seconds")
@@ -137,7 +137,7 @@ def main( configfile='homie-bluetooth.json' ):
 				time.sleep( 1 )
 
 		except Exception as e:
-	       	# Error appending data, most likely because credentials are stale.
+			# Error appending data, most likely because credentials are stale.
 			# Null out the worksheet so a login is performed at the top of the loop.
 			print('Append error, logging in again: ' + str(e))
 			print ("Sleeping for 60 seconds")
@@ -145,12 +145,12 @@ def main( configfile='homie-bluetooth.json' ):
 			continue
 
 if __name__ == '__main__':
-    try:
-        parser= argparse.ArgumentParser( description="MQTT Based Bluetooth Reader" )
-        parser.add_argument( '-c','--configfile', help='Configuration filename (json)',required=True )
-        args = parser.parse_args()
-        main(args.configfile)
-    except (KeyboardInterrupt, SystemExit):
+	try:
+		parser= argparse.ArgumentParser( description="MQTT Based Bluetooth Reader" )
+		parser.add_argument( '-c','--configfile', help='Configuration filename (json)',required=True )
+		args = parser.parse_args()
+		main(args.configfile)
+	except (KeyboardInterrupt, SystemExit):
 		mqttc.loop_stop()
 		mqttc.disconnect()
 		print ("Top-level exception - terminating.")
