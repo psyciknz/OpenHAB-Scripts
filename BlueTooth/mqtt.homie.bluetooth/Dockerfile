@@ -1,12 +1,11 @@
 FROM python:3
 
 WORKDIR /usr/src/app
-mkdir bt
+RUN mkdir /config
 
 #COPY requirements.txt ./
-RUN pip install --no-cache-dir pybluez homie 
+RUN pip install --no-cache-dir pybluez homie
 
-COPY . ./bt
-COPY bluemaestroscan.py .
+COPY . .
 
-CMD [ "python", "./bt/your-daemon-or-script.py" ]
+CMD [ "python", "./mqtt.homie.bluetooth.py -c /config/config.json" ]

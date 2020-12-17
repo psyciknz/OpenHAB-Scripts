@@ -9,7 +9,7 @@
 
 # Credit jcs 6/8/2014 as basis
 
-from .. import bluemaestroscan  #specific bluemaestro tempo disc scanner
+import bluemaestroscan  #specific bluemaestro tempo disc scanner
 import json
 import sys
 import argparse
